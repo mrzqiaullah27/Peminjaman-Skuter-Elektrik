@@ -20,19 +20,19 @@
       </form>
       <div class="signup">
         <span class="signup">Don't have an account?
-         <label for="check">Signup</label>
+         <label for="check">Sign Up</label>
         </span>
       </div>
     </div>
     <div class="registration form">
-      <header>Signup</header>
+      <header>Sign Up</header>
       <form action="#">
         <input type="text" placeholder="Enter your username">
         <input type="password" placeholder="Create a password">
         <input type="password" placeholder="Confirm your password">
-        <input type="button" class="button" value="Signup">
+        <input type="button" class="button" value="Sign Up">
       </form>
-      <div class="signup">
+      <div class="sign Up">
         <span class="signup">Already have an account?
          <label for="check">Login</label>
         </span>
