@@ -1,17 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Forgot Password</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login & Registration </title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Forgot Password</h1>
-    <form action="/forgot-password" method="post">
-      <label for="email">Enter your email</label>
-      <input type="email" id="email" name="email" placeholder="Email address" required><br><br>
-      <button>Send My Password</button>
-    </form>
+    <input type="checkbox" id="check">
+    <div class="login form">
+      <header>Login</header>
+      <form action="#">
+        <input type="email" placeholder="Enter your email">
+        <input type="text" placeholder="Enter your username">
+        <input type="password" placeholder="Enter your password">
+        <a href="#">Forgot password?</a>
+        <input type="button" class="button" value="Login">
+      </form>
+      <div class="signup">
+        <span class="signup">Don't have an account?
+         <label for="check">Sign Up</label>
+        </span>
+      </div>
+    </div>
+    <div class="registration form">
+      <header>Sign Up</header>
+      <form action="#">
+        <input type="email" placeholder="Enter your email">
+        <input type="text" placeholder="Create your username">
+        <input type="password" placeholder="Create a password">
+        <input type="password" placeholder="Confirm your password">
+        <input type="button" class="button" value="Sign Up">
+      </form>
+      <div class="signup">
+        <span class="signup">Already have an account?
+         <label for="check">Login</label>
+        </span>
+      </div>
+    </div>
   </div>
 </body>
 </html>
