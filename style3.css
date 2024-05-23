@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #009579; /* a nice blue-green color */
+  margin: 250px;
+  padding: 0;
+  /* add a subtle gradient to the background */
+  background-image: linear-gradient(to bottom, #009579, #007a6c);
+}
+
+h1 {
+  font-size: 70px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+  /* add a subtle shadow to the heading */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+p {
+  font-size: 25px;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 20px;
+  /* add a subtle opacity to the paragraph text */
+  opacity: 0.8;
+}
+
+a {
+  text-decoration: none;
+  color: #FFFFFF;
+  /* add a subtle transition to the link hover effect */
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: #23527c;
+  /* add a subtle box shadow to the link on hover */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  /* add a subtle animation to the container on hover */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.container h1 {
+  margin-top: 0;
+}
+
+.container p {
+  margin-bottom: 20px;
+}
+
+.container a {
+  display: block;
+  margin: 20px auto;
+  width: fit-content;
+  padding: 10px 20px;
+  border: 1px solid #337ab7;
+  border-radius: 5px;
+  background-color: #337ab7;
+  color: #fff;
+  text-align: center;
+  /* add a subtle animation to the button on hover */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.container a:hover {
+  background-color: #23527c;
+  /* add a subtle box shadow to the button on hover */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+    
