@@ -58,7 +58,7 @@
     <h1>Admin Dashboard</h1>
     <div class="dashboard-buttons">
         <a href="data user.php">Manage Users</a>
-        <a href="scooter.php">Manage Scooters</a>
+        <a href="scooter.1.php">Manage Scooters</a>
         <a href="tarif sewa.php">Edit Tarif Sewa</a>
     </div>
     <a class="logout-button" href="tampilan.php">Logout</a>
