@@ -47,6 +47,19 @@
     .red {
       color: red;
     }
+    .back-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #dc3545;
+            border: circular;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
   </style>
 </head>
 <body>
@@ -80,7 +93,7 @@
       <th>Action</th>
     </tr>
   </table>
-
+ <button class="button back-button" onclick="goBack()">Back</button>
   <script>
     let scooters = [];
 
@@ -138,6 +151,9 @@
       scooters.splice(index, 1);
       displayScooters();
     }
+     function goBack() {
+            window.history.back();
+        }
   </script>
 </body>
 </html>
