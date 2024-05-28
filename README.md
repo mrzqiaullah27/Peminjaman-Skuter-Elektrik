@@ -20,7 +20,7 @@
 - Merekam transaksi pengembalian scooter dan memasukkan biaya sewa tambahan jika scooter disewa lebih dari 1 jam, lalu mengembalikan KTP.
 
 #### Adapun data yang dikelola dalam aplikasi ini antara lain:  
-1) Kelurahan, kecamatan di Kabupaten Purwakarta (asumsi, penyewa memiliki alamat di Purwakarta).  
+1) Kelurahan, kecamatan di Kabupaten Purwakarta.  
 2) Pengguna (admin, pimpinan, operator)  
 3) Scooter 
 4) Transaksi penyewaan (pengambilan) scooter.  
