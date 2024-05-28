@@ -7,7 +7,7 @@
 - Mengelola data pengguna (operator/petugas penyewaan dan pimpinan taman)  
 - Mengelola data scooter  
 - Edit tarif sewa scooter (per jam).
-- 
+  
 ### Pimpinan Taman:  
 - Mencari dan melihat data lengkap (detail) setiap scooter.  
 - Melihat laporan transaksi penyewaan berdasarkan scooter untuk perioda tertentu.  
