@@ -1,3 +1,8 @@
+<?php
+include 'config.php';
+session_start();
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,6 +66,6 @@
         <a href="scooter.1.php">Manage Scooters</a>
         <a href="tarif sewa.php">Edit Tarif Sewa</a>
     </div>
-    <a class="logout-button" href="tampilan.php">Logout</a>
+    <a class="logout-button" href="index.php">Logout</a>
 </body>
 </html>
