@@ -1,316 +1,179 @@
+<?php
+include 'config.php';
+
+// Ambil parameter tanggal mulai dan tanggal akhir dari form
+$tanggal_mulai = isset($_POST['tanggal_mulai']) ? $_POST['tanggal_mulai'] : '';
+$tanggal_akhir = isset($_POST['tanggal_akhir']) ? $_POST['tanggal_akhir'] : '';
+
+// Lakukan kueri SQL untuk mendapatkan laporan transaksi berdasarkan scooter dan periode tertentu
+$sql = "SELECT * FROM transaksi_penyewaan
+        INNER JOIN scooter ON transaksi_penyewaan.scooter_id = scooter.id
+        WHERE tanggal_sewa BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'";
+$result = $conn->query($sql);
+
+// Tampilkan laporan transaksi penyewaan berdasarkan scooter
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Tampilkan detail transaksi
+    }
+} else {
+    echo "No transactions found for the specified period.";
+}
+// Ambil parameter tanggal mulai dan tanggal akhir dari form
+$tanggal_mulai = isset($_POST['tanggal_mulai']) ? $_POST['tanggal_mulai'] : '';
+$tanggal_akhir = isset($_POST['tanggal_akhir']) ? $_POST['tanggal_akhir'] : '';
+
+// Lakukan kueri SQL untuk mendapatkan laporan transaksi berdasarkan penyewa dan periode tertentu
+$sql = "SELECT * FROM transaksi_penyewaan
+        INNER JOIN pengguna ON transaksi_penyewaan.pengguna_id = pengguna.id
+        WHERE tanggal_sewa BETWEEN '$tanggal_mulai' AND '$tanggal_akhir'";
+$result = $conn->query($sql);
+
+// Tampilkan laporan transaksi penyewaan berdasarkan penyewa
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Tampilkan detail transaksi
+    }
+} else {
+    echo "No transactions found for the specified period.";
+}
+$sql = "SELECT scooter_id, COUNT(*) AS total_sewa FROM transaksi_penyewaan GROUP BY scooter_id ORDER BY total_sewa DESC";
+$result = $conn->query($sql);
+
+$ranking_scooter = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $ranking_scooter[] = $row;
+    }
+}
+
+// Tampilkan urutan peringkat scooter terlaris
+foreach ($ranking_scooter as $rank) {
+    echo "Scooter ID: " . $rank['scooter_id'] . ", Total Sewa: " . $rank['total_sewa'] . "<br>";
+}
+include 'config.php';
+
+$sql = "SELECT pengguna_id, COUNT(*) AS total_sewa FROM transaksi_penyewaan GROUP BY pengguna_id ORDER BY total_sewa DESC";
+$result = $conn->query($sql);
+
+$ranking_penyewa = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $ranking_penyewa[] = $row;
+    }
+}
+
+// Tampilkan peringkat penyewa yang paling sering menyewa scooter
+foreach ($ranking_penyewa as $rank) {
+    echo "Pengguna ID: " . $rank['pengguna_id'] . ", Total Sewa: " . $rank['total_sewa'] . "<br>";
+}
+?>
 <!DOCTYPE html>
+<style>
+   
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f7ff; /* Biru muda untuk latar belakang */
+    color: #333; /* Warna teks */
+}
+
+h1, h2 {
+    color: #007bff; /* Biru untuk judul */
+}
+
+form, table {
+    background-color: #ffffff; /* Warna latar belakang untuk form dan tabel */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+}
+
+input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="submit"], button {
+    background-color: #007bff; /* Biru untuk tombol */
+    color: #fff; /* Warna teks tombol */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #0056b3; /* Warna biru yang sedikit lebih gelap saat tombol dihover */
+}
+ .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #dc3545;
+            border: circular;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+</style>
 <html lang="en">
 <head>
+      <a class="logout-button" href="index.php">Logout</a>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scooter Rental Management</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #87CEFA;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #00BFFF;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        section {
-            background-color: white;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #00BFFF;
-        }
-
-        button {
-            background-color: #00BFFF;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #008CBA;
-        }
-
-        input[type="text"], input[type="date"] {
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .scooter-detail {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .detail-label {
-            font-weight: bold;
-        }
-
-        .detail-value {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        
-        input[type="text"], input[type="date"] {
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .date-label {
-            margin-right: 10px;
-        }
-
-        #scooter-details-content, #transaction-report-scooter-content, #transaction-report-renter-content, #statistics-content {
-            margin-top: 20px;
-        }
-
-        .chart-container {
-            width: 100%;
-            height: 400px;
-        }
-    </style>
+    <title>Pimpinan Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Manajemen Penyewaan Scooter</h1>
-    </header>
+    <h1>Pimpinan Dashboard</h1>
+    <button onclick="showScooters()">Show Scooters</button>
+    <h2>Cari dan Lihat Data Scooter</h2>
+    <form action="view_scooter.php" method="post">
+        <label for="search_date_start">Tanggal Mulai:</label>
+        <input type="date" id="search_date_start" name="search_date_start" required>
+        <label for="search_date_end">Tanggal Akhir:</label>
+        <input type="date" id="search_date_end" name="search_date_end" required>
+        <input type="submit" value="Cari">
+    </form>
+    
+    <h2>Lihat Laporan Transaksi Penyewaan</h2>
+    <form action="view_transaction_report.php" method="post">
+        <label for="transaction_date_start">Tanggal Mulai:</label>
+        <input type="date" id="transaction_date_start" name="transaction_date_start" required>
+        <label for="transaction_date_end">Tanggal Akhir:</label>
+        <input type="date" id="transaction_date_end" name="transaction_date_end" required>
+        <input type="submit" value="Lihat Laporan">
+    </form>
+    
+    <h2>Lihat Statistik</h2>
+    <button onclick="showTopScooters()">Lihat Top Scooters</button>
+    <button onclick="showTopRenters()">Lihat Top Renters</button>
+    
 
-    <main>
-        <section id="scooter-details">
-            <h2>Detail Scooter</h2>
-            <input type="text" id="scooter-id" placeholder="Masukkan Nomor Unik Scooter">
-            <button onclick="fetchScooterById()">Lihat Detail</button>
-            <button onclick="fetchAllScooters()">Lihat Semua Scooter</button>
-            <div id="scooter-details-content" class="scooter-detail"></div>
-        </section>
-
-        <section id="transaction-report-scooter">
-            <h2>Laporan Transaksi per Scooter</h2>
-            <label class="date-label">Dari:</label>
-            <input type="date" id="start-date-scooter">
-            <label class="date-label">Sampai:</label>
-            <input type="date" id="end-date-scooter">
-            <button onclick="fetchTransactionReportByScooter()">Lihat Laporan</button>
-            <div id="transaction-report-scooter-content"></div>
-        </section>
-
-        <section id="transaction-report-renter">
-            <h2>Laporan Transaksi per Penyewa</h2>
-            <label class="date-label">Dari:</label>
-            <input type="date" id="start-date-renter">
-            <label class="date-label">Sampai:</label>
-            <input type="date" id="end-date-renter">
-            <button onclick="fetchTransactionReportByRenter()">Lihat Laporan</button>
-            <div id="transaction-report-renter-content"></div>
-        </section>
-
-        <section id="statistics">
-            <h2>Statistik Penyewaan</h2>
-            <div class="chart-container">
-                <canvas id="top-scooters-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="top-renters-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="top-areas-chart"></canvas>
-            </div>
-            <div id="statistics-content"></div>
-        </section>
-    </main>
-
-
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // JavaScript untuk menangani pengambilan dan penampilan data
-        });
-
-        function fetchScooterById() {
-            const scooterId = document.getElementById('scooter-id').value;
-            const scooterDetails = [
-                {
-                    id: "S001",
-                    warna: "Merah",
-                    status: "Available",
-                    count: 15,
-                    duration: 120
-                },
-                {
-                    id: "S002",
-                    warna: "Biru",
-                    status: "In use",
-                    count: 30,
-                    duration: 240
-                },
-                {
-                    id: "S003",
-                    warna: "Hijau",
-                    status: "Maintenance",
-                    count: 5,
-                    duration: 60
-                }
-            ];
-            const scooter = scooterDetails.find(s => s.id == scooterId);
-            if (scooter) {
-                displayScooterDetails(scooter);
-            } else {
-                displayScooterDetails({ error: 'Scooter tidak ditemukan' });
-            }
-        }
-
-        function fetchAllScooters() {
-            window.location.href = 'data scooter lengkap.html';
-        }
-
-        function displayScooterDetails(scooter) {
-            const scooterDetailsContainer = document.getElementById('scooter-details-content');
-            scooterDetailsContainer.innerHTML = '';
-
-            if (scooter.error) {
-                scooterDetailsContainer.textContent = scooter.error;
-                return;
-            }
-
-            for (const [key, value] of Object.entries(scooter)) {
-                const detailElement = document.createElement('div');
-                detailElement.classList.add('detail-item');
-                detailElement.innerHTML = `
-                    <div class="detail-label">${key}</div>
-                    <div class="detail-value">${value}</div>
-                `;
-                scooterDetailsContainer.appendChild(detailElement);
-            }
-        }
-        function fetchTransactionReportByScooter() {
-            const startDate = document.getElementById('start-date-scooter').value;
-            const endDate = document.getElementById('end-date-scooter').value;
-            const transactions = [
-                { scooterId: 1, renter: 'User A', date: '2024-05-01', duration: '2 hours' },
-                { scooterId: 2, renter: 'User B', date: '2024-05-02', duration: '3 hours' }
-            ];
-            displayData('transaction-report-scooter-content', transactions);
-        }
-
-        function fetchTransactionReportByRenter() {
-            const startDate = document.getElementById('start-date-renter').value;
-            const endDate = document.getElementById('end-date-renter').value;
-            const transactions = [
-                { renter: 'User A', scooterId: 1, date: '2024-05-01', duration: '2 hours' },
-                { renter: 'User B', scooterId: 2, date: '2024-05-02', duration: '3 hours' }
-            ];
-            displayData('transaction-report-renter-content', transactions);
-        }
-
-        function fetchStatistics() {
-            const statistics = {
-                topScooters: ['Scooter A', 'Scooter B'],
-                topRenters: ['User A', 'User B'],
-                topAreas: ['Kecamatan 1', 'Kecamatan 2']
-            };
-
-            displayData('statistics-content', statistics);
-            renderCharts(statistics);
-        }
-
-        function displayData(elementId, data) {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        }
-
-        function renderCharts(statistics) {
-            const ctxTopScooters = document.getElementById('top-scooters-chart').getContext('2d');
-            const ctxTopRenters = document.getElementById('top-renters-chart').getContext('2d');
-            const ctxTopAreas = document.getElementById('top-areas-chart').getContext('2d');
-
-            new Chart(ctxTopScooters, {
-                type: 'bar',
-                data: {
-                    labels: statistics.topScooters,
-                    datasets: [{
-                        label: 'Top Scooters',
-                        data: [10, 5], // Example data, replace with real data
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            new Chart(ctxTopRenters, {
-                type: 'bar',
-                data: {
-                    labels: statistics.topRenters,
-                    datasets: [{
-                        label: 'Top Renters',
-                        data: [7, 3], // Example data, replace with real data
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            new Chart(ctxTopAreas, {
-                type: 'bar',
-                data: {
-                    labels: statistics.topAreas,
-                    datasets: [{
-                        label: 'Top Areas',
-                        data: [8, 6], // Example data, replace with real data
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-    </script>
 </body>
 </html>
+<script>function validateForm() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var role = document.getElementById("role").value;
+
+    if (username == "" || password == "" || role == "") {
+        alert("All fields are required.");
+        return false;
+    }
+    return true;
+}
+ function showScooters() {
+    window.location.href="data scooter lengkap.php";
+    }
+</script>
