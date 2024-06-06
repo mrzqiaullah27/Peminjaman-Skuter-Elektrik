@@ -1,3 +1,20 @@
+<?php
+include 'config.php';
+session_start();
+if ($_SESSION['role'] != 'admin') {
+    header("Location: index.php");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $tarif_per_jam = $_POST['tarif_per_jam'];
+    $conn->query("UPDATE tarif_sewa SET tarif_per_jam='$tarif_per_jam' WHERE id=1");
+    echo "Tarif berhasil diperbarui!";
+}
+
+$result = $conn->query("SELECT * FROM tarif_sewa WHERE id=1");
+$tarif = $result->fetch_assoc();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
