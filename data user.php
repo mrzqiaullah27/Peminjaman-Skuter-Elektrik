@@ -162,7 +162,7 @@ if ($result && $result->num_rows > 0) {
 </html>
  <script>
         function goBack() {
-            window.location.href = "pimpinanTaman.php";
+            window.location.href = "admin.php";
         }
 
         function editUser(userId) {
