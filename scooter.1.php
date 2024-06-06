@@ -1,11 +1,39 @@
+<?php
+include 'config.php';
+
+// Menangani form submission untuk menambahkan scooter
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $number = isset($_POST['number']) ? $_POST['number'] : '';
+    $color = isset($_POST['color']) ? $_POST['color'] : '';
+    $status = isset($_POST['status']) ? $_POST['status'] : '';
+
+    if (!empty($number) && !empty($color) && !empty($status)) {
+        $sql = "INSERT INTO scooter (number, color, status) VALUES ('$number', '$color', '$status')";
+        if ($conn->query($sql) === TRUE) {
+            echo "New scooter added successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    } else {
+        echo "All fields are required.";
+    }
+}
+
+// Mengambil data scooter dari database
+$sql = "SELECT id, number, color, status FROM scooter";
+$result = $conn->query($sql);
+
+// Menyimpan data scooter dalam array objek
+$scooters = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_object()) {
+        $scooters[] = $row;
+    }
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRUD Scooter Management</title>
-  <style>
-    body {
+<style>
+   body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
@@ -60,100 +88,124 @@
             font-size: 16px;
             transition: background-color 0.3s;
         }
-  </style>
+</style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Scooters</title>
 </head>
 <body>
-  <h1>CRUD Scooter Management</h1>
-  <div id="scooterForm">
-    <input type="text" id="scooterNumber" placeholder="Scooter Number">
-    <select id="scooterColor">
-      <option value="red">Red</option>
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="yellow">Yellow</option>
-      <option value="orange">Orange</option>
-      <option value="purple">Purple</option>
-      <option value="grey">Grey</option>
-      <option value="black">Black</option>
-      <option value="white">White</option>
-      <option value="pink">Pink</option>
-    </select>
-    <select id="scooterStatus">
-      <option value="available">Available</option>
-      <option value="inUse">In Use</option>
-      <option value="maintenance">Maintenance</option>
-    </select>
-    <button onclick="addScooter()">Add Scooter</button>
-  </div>
-  <table id="scooterTable">
-    <tr>
-      <th>Scooter Number</th>
-      <th>Color</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </table>
- <button class="button back-button" onclick="goBack()">Back</button>
-  <script>
-    let scooters = [];
+    <button class="button back-button" onclick="goBack()">Back</button>
+    <h1>Manage Scooters</h1>
+    <form action="scooter.1.php" method="post">
+        <label for="number">Number:</label><br>
+        <input type="text" id="number" name="number" required><br>
+        <label for="color">Color:</label><br>
+        <input type="text" id="color" name="color" required><br>
+        <label for="status">Status:</label><br>
+        <select id="status" name="status" required>
+            <option value="available">Available</option>
+            <option value="rented">Rented</option>
+            <option value="maintenance">Maintenance</option>
+        </select><br>
+        <input type="submit" value="Submit">
+    </form>
 
-    function addScooter() {
-      const number = document.getElementById('scooterNumber').value;
-      const color = document.getElementById('scooterColor').value;
-      const status = document.getElementById('scooterStatus').value;
-
-      const newScooter = {
-        number: number,
-        color: color,
-        status: status
-      };
-
-      scooters.push(newScooter);
-      displayScooters();
-    }
-
-    function displayScooters() {
-      const table = document.getElementById('scooterTable');
-      table.innerHTML = `
+      <h2>Scooter List</h2>
+    <table border="1">
         <tr>
-          <th>Scooter Number</th>
-          <th>Color</th>
-          <th>Status</th>
-          <th>Action</th>
+            <th>ID</th>
+            <th>Number</th>
+            <th>Color</th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
-      `;
+        <?php
+        foreach ($scooters as $scooter) {
+            echo "<tr id='row_$scooter->id'>";
+            echo "<td>" . $scooter->id . "</td>";
+            echo "<td>" . $scooter->number . "</td>";
+            echo "<td>" . $scooter->color . "</td>";
+            echo "<td id='status_$scooter->id' class='" . $scooter->status . "'>" . $scooter->status . "</td>";
+            echo "<td>";
+            echo "<button class='button' onclick='editScooterStatus(" . $scooter->id . ")'>Edit Status</button>";
+            echo "<button class='button' onclick='deleteScooter(" . $scooter->id . ")'>Delete</button>";
+            echo "</td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
 
-      scooters.forEach((scooter, index) => {
-        let statusClass;
-        switch(scooter.status) {
-          case 'available':
-            statusClass = 'green';
-            break;
-          case 'inUse':
-            statusClass = 'blue';
-            break;
-          case 'maintenance':
-            statusClass = 'red';
-            break;
+    <script>
+        function goBack() {
+            window.location.href = "admin.php";
         }
 
-        const row = table.insertRow();
-        row.innerHTML = `
-          <td>${scooter.number}</td>
-          <td style="color: ${scooter.color}">${scooter.color}</td>
-          <td class="${statusClass}">${scooter.status}</td>
-          <td><button onclick="deleteScooter(${index})">Delete</button></td>
-        `;
-      });
-    }
+        function editScooterStatus(scooterId) {
+            var statusCell = document.getElementById("status_" + scooterId);
+            var currentStatus = statusCell.innerText;
 
-    function deleteScooter(index) {
-      scooters.splice(index, 1);
-      displayScooters();
-    }
-     function goBack() {
-            window.history.back();
+            // Create select element
+            var selectStatus = document.createElement("select");
+            selectStatus.innerHTML = "<option value='available'>Available</option><option value='rented'>Rented</option><option value='maintenance'>Maintenance</option>";
+            selectStatus.value = currentStatus;
+
+            // Replace status cell content with select element
+            statusCell.innerHTML = "";
+            statusCell.appendChild(selectStatus);
+
+            // Create submit button
+            var submitButton = document.createElement("button");
+            submitButton.innerText = "Submit";
+            submitButton.onclick = function() {
+                updateScooterStatus(scooterId, selectStatus.value);
+            };
+
+            // Append submit button to status cell
+            statusCell.appendChild(submitButton);
         }
-  </script>
+
+        function updateScooterStatus(scooterId, newStatus) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "update_scooter_status.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Update status cell with new status
+                        var statusCell = document.getElementById("status_" + scooterId);
+                        statusCell.innerText = newStatus;
+                        statusCell.classList.remove(statusCell.classList.item(0)); // Remove previous class
+                        statusCell.classList.add(newStatus); // Add new class
+                    } else {
+                        alert('Error occurred while updating scooter status.');
+                    }
+                }
+            };
+            xhr.send("scooterId=" + scooterId + "&newStatus=" + encodeURIComponent(newStatus));
+        }
+
+        function deleteScooter(scooterId) {
+            if (confirm("Are you sure you want to delete this scooter?")) {
+                // Send AJAX request to delete scooter
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "delete_scooter.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Remove the row from the table after successful deletion
+                            var row = document.getElementById("row_" + scooterId);
+                            row.parentNode.removeChild(row);
+                        } else {
+                            alert('Error occurred while deleting scooter.');
+                        }
+                    }
+                };
+                xhr.send("scooterId=" + scooterId);
+            }
+        }
+    </script>
 </body>
 </html>
